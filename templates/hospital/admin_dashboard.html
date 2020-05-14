@@ -1,0 +1,84 @@
+{% extends 'hospital/admin_base.html' %}
+{% load static %}
+
+
+
+
+{% block content %}
+
+{%include 'hospital/admin_dashboard_cards.html'%}
+
+<br><br><br><br>
+
+<div class="container">
+<div class="row">
+
+
+    <div class="panel panel-primary" style="margin-left:2%;">
+      <div class="panel-heading" style="text-align:center;">
+        <h6 class="panel-title">Students</h6>
+      </div>
+      <table class="table table-hover" id="dev-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Mobile</th>
+            <th>Fee</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tr>
+          <td> xyzzzzzzzzz</td>
+          <td>xxxxxxx</td>
+          <td>xxxxxxxxxx</td>
+          <td>xxxxxxxx</td>
+          <td><a class="btn btn-primary btn-xs" href=""><span class="glyphicon glyphicon-edit"></span></a></td>
+          <td><a class="btn btn-danger btn-xs" href=""><span class="glyphicon glyphicon-trash"></span></a></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="panel panel-primary" style="margin-left:5%;">
+      <div class="panel-heading" style="text-align:center;">
+        <h6 class="panel-title">Students</h6>
+      </div>
+      <table class="table table-hover" id="dev-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Mobile</th>
+            <th>Fee</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tr>
+          <td> xyzzzzzzzzz</td>
+          <td>xxxxxxx</td>
+          <td>xxxxxxxxxx</td>
+          <td>xxxxxxxx</td>
+          <td><a class="btn btn-primary btn-xs" href=""><span class="glyphicon glyphicon-edit"></span></a></td>
+          <td><a class="btn btn-danger btn-xs" href=""><span class="glyphicon glyphicon-trash"></span></a></td>
+        </tr>
+      </table>
+    </div>
+
+
+
+
+  </div>
+
+</div>
+
+
+
+<!--
+written By : sumit kumar
+facebook : fb.com/sumit.luv
+-->
+
+
+{% endblock content %}
