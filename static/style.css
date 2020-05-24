@@ -60,6 +60,7 @@ main {
 .menu ul li.icon-calendar {
   background-image: url("http://www.entypo.com/images//calendar.svg");
 }
+
 .menu ul li:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
