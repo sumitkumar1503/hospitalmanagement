@@ -26,11 +26,9 @@ They can update any student/teacher details.
 Admin can announce any notice.
 
 
-## Drawbacks
-On update page of teacher/student you must have to update password.
 
 
-## How TO RUN THIS PROJECT
+## HOW TO RUN THIS PROJECT
 - Install Python(3.7.6) (Dont Forget to Tick Add to Path while installing Python)
 - Open Terminal and Execute Following Commands :
 ```
@@ -39,7 +37,7 @@ pip install django-widget-tweaks
 pip install xhtml2pdf
 ```
 - Download This Project Zip Folder and Extract it
-- Move to project folder in Terminal then run following Commands :
+- Move to project folder in Terminal. Then run following Commands :
 ```
 py manage.py makemigrations
 py manage.py migrate
@@ -54,8 +52,15 @@ http://127.0.0.1:8000/
 - Python Version 3.7.6
 - Django Version 3.0.5
 - Django-widget-tweaks
-- Sqlite3
+- xhtml2pdf
+- Database : Sqlite3
+
+## Drawbacks/LoopHoles
+- Any one can be Admin. There is no Approval required for admin account. So you can disable admin signup process and use any logic like creating superuser.
+- On update page of teacher/student you must have to update password.
+
 
 ## Feedback
 Any suggestion and feedback is welcome. You can message me on facebook
 - [Sumit on Facebook](https://fb.com/sumit.luv)
+- [LazyCoder On Youtube](https://youtube.com/lazycoders)
