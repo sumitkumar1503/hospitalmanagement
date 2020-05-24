@@ -1,10 +1,7 @@
 # HospitalManagement
+![hi](https://img.shields.io/badge/Developed%20By-Sumit%Kumar-red)
 
-
-https://img.shields.io/github/forks/sumitkumar1503/hospitalmanagement.git
-
-![hi](https://img.shields.io/badge/By%20Sumit%20Kumar-hello-red)
-
+![star](https://img.shields.io/github/forks/sumitkumar1503/hospitalmanagement.git)
 ## Functions
 ### Teacher
 first teacher will apply for job, when their account is approved by admin, then only teacher can access their dashboard.
