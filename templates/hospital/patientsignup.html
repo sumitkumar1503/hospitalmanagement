@@ -62,7 +62,7 @@
 
 
   <!--- signup page for patient by admin(sumit)  ---------->
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="container register-form">
       <div class="form">
@@ -85,7 +85,9 @@
               <div class="form-group">
                 {% render_field patientForm.symptoms class="form-control" placeholder="Symptoms" %}
               </div>
-
+              <div class="form-group">
+                {% render_field patientForm.profile_pic class="form-control" placeholder="Profile Picture" %}
+              </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">

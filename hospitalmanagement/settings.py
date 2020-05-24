@@ -125,20 +125,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS=[
-STATIC_DIR,
- ]
+STATICFILES_DIRS=[STATIC_DIR,]
 
+MEDIA_ROOT=os.path.join(BASE_DIR,'static')
 
 
 
 LOGIN_REDIRECT_URL='/afterlogin'
 
-  #for contact us give your gmail id and password
-  #for email
+#for contact us give your gmail id and password
 EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'sumitproject1503@gmail.com'
+EMAIL_HOST_USER = 'xyz@gmail.com'
 EMAIL_HOST_PASSWORD = 'xyz'
+EMAIL_RECEIVING_USER = 'xyz@gmail.com' # email on which you will receive messages sent from website
