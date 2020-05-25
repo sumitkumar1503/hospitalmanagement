@@ -1,8 +1,15 @@
 # Hospital Management
 ![developer](https://img.shields.io/badge/Developed%20By%20%3A-Sumit%20Kumar-red)
-
-
-![screenshot](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/admin_dashboard.png?raw=true)
+---
+## screenshots
+### Homepage
+![homepage snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/homepage.png?token=AKNRY6DJEUUBKOKCJTKC7CS6ZMYLC)
+### Admin Dashboard
+![dashboard snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/admin_dashboard.png?raw=true)
+### Invoice
+![invoice snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/invoice.png?token=AKNRY6FF54CDPMP42MQHS7K6ZMYTO)
+### Doctor list
+![doctor snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/admin_doctor.png?token=AKNRY6EERW33FEWBEQ5I76C6ZMYYI)
 ---
 ## Functions
 ### Admin
