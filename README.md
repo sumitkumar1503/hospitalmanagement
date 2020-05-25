@@ -3,13 +3,13 @@
 ---
 ## screenshots
 ### Homepage
-![homepage snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/homepage.png?token=AKNRY6C4J4W6ED4CYRJXKI26ZMZFQ)
+![homepage snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/homepage.png?raw=true)
 ### Admin Dashboard
 ![dashboard snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/admin_dashboard.png?raw=true)
 ### Invoice
-![invoice snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/invoice.png?token=AKNRY6FF54CDPMP42MQHS7K6ZMYTO)
+![invoice snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/invoice.png?raw=true)
 ### Doctor list
-![doctor snap](https://raw.githubusercontent.com/sumitkumar1503/hospitalmanagement/master/static/screenshots/admin_doctor.png?token=AKNRY6EERW33FEWBEQ5I76C6ZMYYI)
+![doctor snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/admin_doctor.png?raw=true)
 ---
 ## Functions
 ### Admin
