@@ -1,9 +1,7 @@
 # HospitalManagement
+![developer](https://img.shields.io/badge/Developed%20By%20%3A-Sumit%20Kumar-red)
 
-
-
-
-
+---
 ## Functions
 ### Teacher
 first teacher will apply for job, when their account is approved by admin, then only teacher can access their dashboard.
