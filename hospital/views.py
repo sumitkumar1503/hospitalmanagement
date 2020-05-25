@@ -37,10 +37,6 @@ def patientclick_view(request):
 
 
 
-
-
-
-
 def admin_signup_view(request):
     form=forms.AdminSigupForm()
     if request.method=='POST':
@@ -683,6 +679,8 @@ def delete_appointment_view(request,pk):
 #---------------------------------------------------------------------------------
 #------------------------ PATIENT RELATED VIEWS START ------------------------------
 #---------------------------------------------------------------------------------
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
 def patient_dashboard_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id)
     doctor=models.Doctor.objects.get(user_id=patient.assignedDoctorId)
@@ -699,12 +697,16 @@ def patient_dashboard_view(request):
 
 
 
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
 def patient_appointment_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     return render(request,'hospital/patient_appointment.html',{'patient':patient})
 
 
 
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
 def patient_book_appointment_view(request):
     appointmentForm=forms.AppointmentForm()
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
@@ -726,6 +728,8 @@ def patient_book_appointment_view(request):
 
 
 
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
 def patient_view_appointment_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     appointments=models.Appointment.objects.all().filter(patientId=request.user.id)
@@ -733,6 +737,8 @@ def patient_view_appointment_view(request):
 
 
 
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
 def patient_discharge_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=patient.id).order_by('-id')[:1]
@@ -798,3 +804,9 @@ def contactus_view(request):
 #---------------------------------------------------------------------------------
 #------------------------ ADMIN RELATED VIEWS END ------------------------------
 #---------------------------------------------------------------------------------
+
+
+
+#Developed By : sumit kumar
+#facebook : fb.com/sumit.luv
+#Youtube :youtube.com/lazycoders

@@ -4,7 +4,7 @@ from . import models
 
 
 
-#for admin
+#for admin signup
 class AdminSigupForm(forms.ModelForm):
     class Meta:
         model=User
@@ -49,12 +49,14 @@ class AppointmentForm(forms.ModelForm):
 
 
 
-
-
-
-
 #for contact us page
 class ContactusForm(forms.Form):
     Name = forms.CharField(max_length=30)
     Email = forms.EmailField()
     Message = forms.CharField(max_length=500,widget=forms.Textarea(attrs={'rows': 3, 'cols': 30}))
+
+
+
+#Developed By : sumit kumar
+#facebook : fb.com/sumit.luv
+#Youtube :youtube.com/lazycoders

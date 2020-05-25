@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 <br><br>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,9 +13,11 @@
     a:link {
       text-decoration: none;
     }
-    .menu{
+
+    .menu {
       top: 50px;
     }
+
     h6 {
       color: white;
     }
@@ -68,37 +71,39 @@
   </style>
 </head>
 
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4 col-xl-6">
-        <div class="card bg-c-blue order-card">
-          <div class="card-block">
-            <a href="/patient-view-appointment">
-              <h6 class="m-b-20">View Your Appointment</h6>
-            </a>
-            <br>
-            <h2 class="text-right"><i class="fas fa-calendar f-left"></i></h2>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-xl-6">
+      <div class="card bg-c-blue order-card">
+        <div class="card-block">
+          <a href="/patient-view-appointment">
+            <h6 class="m-b-20">View Your Appointment</h6>
+          </a>
+          <br>
+          <h2 class="text-right"><i class="fas fa-calendar f-left"></i></h2>
 
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-md-4 col-xl-6">
-        <div class="card bg-c-green order-card">
-          <div class="card-block">
-            <a href="/patient-book-appointment">
-              <h6 class="m-b-20">Book Appointment</h6>
-            </a>
-            <br>
-            <h2 class="text-right"><i class="fas fa-book-medical f-left"></i></h2>
-          </div>
+    <div class="col-md-4 col-xl-6">
+      <div class="card bg-c-green order-card">
+        <div class="card-block">
+          <a href="/patient-book-appointment">
+            <h6 class="m-b-20">Book Appointment</h6>
+          </a>
+          <br>
+          <h2 class="text-right"><i class="fas fa-book-medical f-left"></i></h2>
         </div>
       </div>
     </div>
   </div>
-  <!--
-written By : sumit kumar
-facebook : fb.com/sumit.luv
--->
+</div>
+<!--
+  developed By : sumit kumar
+  facebook : fb.com/sumit.luv
+  youtube : youtube.com/lazycoders
+  -->
+
 {% endblock content %}
