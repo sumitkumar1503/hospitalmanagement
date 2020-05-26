@@ -708,11 +708,11 @@ def patient_appointment_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_book_appointment_view(request):
-    appointmentForm=forms.AppointmentForm()
+    appointmentForm=forms.PatientAppointmentForm()
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
     mydict={'appointmentForm':appointmentForm,'patient':patient}
     if request.method=='POST':
-        appointmentForm=forms.AppointmentForm(request.POST)
+        appointmentForm=forms.PatientAppointmentForm(request.POST)
         if appointmentForm.is_valid():
             appointment=appointmentForm.save(commit=False)
             appointment.doctorId=request.POST.get('doctorId')
