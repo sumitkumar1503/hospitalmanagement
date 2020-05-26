@@ -81,7 +81,7 @@
               {% render_field userForm.password class="form-control" placeholder="Password" %}
             </div>
             <div class="form-group">
-              {% render_field doctorForm.mobile class="form-control" placeholder="Mobile" %}
+              {% render_field doctorForm.mobile class="form-control" pattern="[6789][0-9]{9}" placeholder="Mobile" %}
             </div>
             <div class="form-group">
               {% render_field doctorForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
