@@ -797,7 +797,7 @@ def contactus_view(request):
             email = sub.cleaned_data['Email']
             name=sub.cleaned_data['Name']
             message = sub.cleaned_data['Message']
-            send_mail(str(name)+' || '+str(email),message, EMAIL_HOST_USER, EMAIL_RECEIVING_USER, fail_silently = False)
+            #send_mail(str(name)+' || '+str(email),message, EMAIL_HOST_USER, EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'hospital/contactussuccess.html')
     return render(request, 'hospital/contactus.html', {'form':sub})
 
