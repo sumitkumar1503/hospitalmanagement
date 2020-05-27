@@ -55,6 +55,13 @@ py manage.py runserver
 http://127.0.0.1:8000/
 ```
 
+## CHANGES REQUIRED FOR CONTACT US PAGE
+- In settins.py file, You have to give your email and password
+```
+EMAIL_HOST_USER = 'youremail@gmail.com'
+EMAIL_HOST_PASSWORD = 'your email password'
+EMAIL_RECEIVING_USER = 'youremail@gmail.com'
+```
 
 ## Drawbacks/LoopHoles
 - Any one can be Admin. There is no Approval required for admin account. So you can disable admin signup process and use any logic like creating superuser.
