@@ -68,6 +68,8 @@ EMAIL_RECEIVING_USER = 'youremail@gmail.com'
 - There should be at least one doctor in hospital before admitting patient. So first add doctor.
 - On update page of doctor/patient you must have to update password.
 
+## Disclaimer
+This project is developed for demo purpose and it's not supposed to be used in real application.
 
 ## Feedback
 Any suggestion and feedback is welcome. You can message me on facebook
