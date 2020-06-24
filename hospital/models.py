@@ -14,7 +14,7 @@ class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=10,null=True)
+    mobile = models.CharField(max_length=20,null=True)
     department= models.CharField(max_length=50,choices=departments,default='Cardiologist')
     status=models.BooleanField(default=False)
     @property
@@ -32,9 +32,9 @@ class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=10,null=False)
+    mobile = models.CharField(max_length=20,null=False)
     symptoms = models.CharField(max_length=100,null=False)
-    assignedDoctorId = models.PositiveIntegerField(null=False)
+    assignedDoctorId = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
     admitDate=models.DateField(auto_now=True)
     status=models.BooleanField(default=False)
     @property
@@ -48,8 +48,8 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
-    patientId=models.PositiveIntegerField(null=False)
-    doctorId=models.PositiveIntegerField(null=False)
+    patientId=models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True)
+    doctorId=models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
     patientName=models.CharField(max_length=40,null=True)
     doctorName=models.CharField(max_length=40,null=True)
     appointmentDate=models.DateField(auto_now=True)
@@ -59,11 +59,11 @@ class Appointment(models.Model):
 
 
 class PatientDischargeDetails(models.Model):
-    patientId=models.PositiveIntegerField(null=False)
+    patientId=models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True)
     patientName=models.CharField(max_length=40)
     assignedDoctorName=models.CharField(max_length=40)
     address = models.CharField(max_length=40)
-    mobile = models.CharField(max_length=10,null=True)
+    mobile = models.CharField(max_length=20,null=True)
     symptoms = models.CharField(max_length=100,null=True)
 
     admitDate=models.DateField(null=False)

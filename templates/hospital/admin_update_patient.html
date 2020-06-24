@@ -71,7 +71,7 @@
               {% render_field patientForm.symptoms class="form-control" placeholder="Symptoms" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.profile_pic required="required" class="form-control" placeholder="Profile Picture" %}
+              {% render_field patientForm.profile_pic class="form-control" placeholder="Profile Picture" %}
             </div>
           </div>
           <div class="col-md-6">
@@ -82,7 +82,7 @@
               {% render_field userForm.password class="form-control" placeholder="Password" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.mobile class="form-control" pattern="[6789][0-9]{9}" placeholder="Mobile" %}
+              {% render_field patientForm.mobile class="form-control" placeholder="Mobile" %}
             </div>
             <div class="form-group">
               {% render_field patientForm.assignedDoctorId class="form-control" placeholder="Doctor" %}
