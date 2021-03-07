@@ -47,6 +47,15 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <br><br>
+{% if message %}
+<script>
+  var a = "{{message}}";
+  alert(a);
+</script>
+
+{% endif %}
+
+
 <!------ add appointment page by patient(sumit)  ---------->
 <form method="post">
   {% csrf_token %}
