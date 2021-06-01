@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
+from django.db.models import Q
 
 # Create your views here.
 def home_view(request):
@@ -614,7 +615,7 @@ def search_view(request):
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
     # whatever user write in search box we get in query
     query = request.GET['query']
-    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id,symptoms__icontains=query)
+    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
     return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
 
 
@@ -754,10 +755,10 @@ def patient_view_doctor_view(request):
 
 def search_doctor_view(request):
     patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
-
+    
     # whatever user write in search box we get in query
     query = request.GET['query']
-    doctors=models.Doctor.objects.all().filter(status=True,department__icontains=query)
+    doctors=models.Doctor.objects.all().filter(status=True).filter(Q(department__icontains=query)| Q(user__first_name__icontains=query))
     return render(request,'hospital/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
 
 
