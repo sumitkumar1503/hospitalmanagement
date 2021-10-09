@@ -2,7 +2,7 @@
 Developer - Raumish Kumar
 ---
 ## screenshots
-### Homepage
+### Homepage RAVAL VIVEK
 ![homepage snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/homepage.png?raw=true)
 ### Admin Dashboard
 ![dashboard snap](https://github.com/sumitkumar1503/hospitalmanagement/blob/master/static/screenshots/admin_dashboard.png?raw=true)
