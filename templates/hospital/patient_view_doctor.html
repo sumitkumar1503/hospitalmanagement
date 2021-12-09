@@ -1,0 +1,80 @@
+{% extends 'hospital/patient_base.html' %}
+{% block content %}
+{%load static%}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+</head>
+<!--
+written By : sumit kumar
+facebook : fb.com/sumit.luv
+-->
+
+
+<div class="container">
+
+    <form  action="/searchdoctor" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+ 
+
+  {% if doctors %}
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 class="panel-title"> Total Doctor List</h6>
+    </div>
+    <table class="table table-hover" id="dev-table">
+        <thead>
+          <tr>
+  
+            <th>Name</th>
+            <th>Profile Picture</th>
+            <th>Mobile</th>
+            <th>Address</th>
+            <th>Department</th>
+           
+          </tr>
+        </thead>
+        {% for d in doctors %}
+        <tr>
+  
+          <td> {{d.get_name}}</td>
+          <td> <img src="{% static d.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+          <td>{{d.mobile}}</td>
+          <td>{{d.address}}</td>
+          <td>{{d.department}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+  </div>
+  {%else%}
+  <br><br><br>
+  <h4 style="text-align: center;color: red;">No Doctor Found !!!</h4>
+  {% endif %}
+
+
+</div>
+<!--
+developed By : sumit kumar
+facebook : fb.com/sumit.luv
+youtube : youtube.com/lazycoders
+-->
+
+{% endblock content %}
