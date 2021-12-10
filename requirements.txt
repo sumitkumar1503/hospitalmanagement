@@ -1,4 +1,7 @@
 xhtml2pdf
-Django
+django
 django-widget-tweaks
+django-crispy-forms
 sqlparse
+whitenoise
+mysqlclient

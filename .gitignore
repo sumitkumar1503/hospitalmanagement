@@ -6,6 +6,9 @@ __pycache__
 db.sqlite3
 media
 
+# Azure Configs #
+serverconfig.*
+
 # Backup files #
 *.bak
 
