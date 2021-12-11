@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "/subscriptions/5c939b82-7f28-4854-b879-05e6841333b0/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/medical-appointment-control-system",
-    "appService.deploySubpath": "."
-}
