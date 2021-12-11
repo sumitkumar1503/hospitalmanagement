@@ -4,4 +4,4 @@ django-widget-tweaks
 django-crispy-forms
 sqlparse
 whitenoise
-mysqlclient
+psycopg2-binary
