@@ -1,0 +1,20 @@
+{% extends 'hospital/homebase.html' %}
+
+
+{% block content %}
+
+<br>
+<br>
+
+<div class="jumbotron" style="margin-bottom:0px;">
+  <h1 class="display-4" style="text-align:center;">Hello, Receptionist</h1>
+  <p style="text-align:center;"class="lead">Welcome to Central Patient Record System.</p>
+  <hr style="text-align:center;"class="my-4">
+  <p style="text-align:center;">You can access various features after Login/SignUp.</p>
+  <p style="text-align:center;" class="lead">
+    <a class="btn btn-primary btn-lg" href="/receptionistsignup" role="button">Register Your Account</a>
+    <a class="btn btn-primary btn-lg" href="/receptionistlogin" role="button">Login</a>
+  </p>
+</div>
+
+{% endblock content %}
