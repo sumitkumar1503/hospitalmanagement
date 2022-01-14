@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required,user_passes_test
 from datetime import datetime,timedelta,date
 from django.conf import settings
+from django.db.models import Q
 
 # Create your views here.
 def home_view(request):
@@ -30,10 +31,10 @@ def doctorclick_view(request):
 
 
 #for showing signup/login button for patient(by sumit)
-def receptionistclick_view(request):
+def patientclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/receptionistclick.html')
+    return render(request,'hospital/patientclick.html')
 
 
 
@@ -62,16 +63,12 @@ def doctor_signup_view(request):
         userForm=forms.DoctorUserForm(request.POST)
         doctorForm=forms.DoctorForm(request.POST,request.FILES)
         if userForm.is_valid() and doctorForm.is_valid():
-            hospitalID = request.POST.get('hospital')
-            print(hospitalID)
-            hospital = models.Hospital.objects.get(user_id=hospitalID)
             user=userForm.save()
             user.set_password(user.password)
             user.save()
             doctor=doctorForm.save(commit=False)
-            doctor.hospital = hospital
             doctor.user=user
-            doctor.save()
+            doctor=doctor.save()
             my_doctor_group = Group.objects.get_or_create(name='DOCTOR')
             my_doctor_group[0].user_set.add(user)
         return HttpResponseRedirect('doctorlogin')
@@ -86,16 +83,13 @@ def patient_signup_view(request):
         userForm=forms.PatientUserForm(request.POST)
         patientForm=forms.PatientForm(request.POST,request.FILES)
         if userForm.is_valid() and patientForm.is_valid():
-            hospitalID = request.POST.get('hospital')
-            hospital = models.Hospital.objects.get(user_id=hospitalID)
             user=userForm.save()
             user.set_password(user.password)
             user.save()
             patient=patientForm.save(commit=False)
             patient.user=user
             patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient.hospital = hospital
-            patient.save()
+            patient=patient.save()
             my_patient_group = Group.objects.get_or_create(name='PATIENT')
             my_patient_group[0].user_set.add(user)
         return HttpResponseRedirect('patientlogin')
@@ -113,17 +107,12 @@ def is_doctor(user):
     return user.groups.filter(name='DOCTOR').exists()
 def is_patient(user):
     return user.groups.filter(name='PATIENT').exists()
-def is_hospital(user):
-    return user.groups.filter(name='HOSPITAL').exists()
-def is_ministry(user):
-    return user.groups.filter(name='MINISTRY').exists()
-def is_receptionist(user):
-    return user.groups.filter(name='RECEPTIONIST').exists()
+
 
 #---------AFTER ENTERING CREDENTIALS WE CHECK WHETHER USERNAME AND PASSWORD IS OF ADMIN,DOCTOR OR PATIENT
 def afterlogin_view(request):
-    if is_ministry(request.user):
-        return redirect('ministry-dashboard')
+    if is_admin(request.user):
+        return redirect('admin-dashboard')
     elif is_doctor(request.user):
         accountapproval=models.Doctor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
@@ -136,22 +125,6 @@ def afterlogin_view(request):
             return redirect('patient-dashboard')
         else:
             return render(request,'hospital/patient_wait_for_approval.html')
-    elif is_receptionist(request.user):
-        accountapproval=models.Receptionist.objects.all().filter(user_id=request.user.id,status=True)
-        if accountapproval:
-            return redirect('receptionist-dashboard')
-        else:
-            return render(request,'hospital/receptionist_wait_for_approval.html')
-
-    elif is_hospital(request.user):
-        accountapproval=models.Hospital.objects.all().filter(user_id=request.user.id,status='Approved')
-        if accountapproval:
-            return redirect('hospital-dashboard')
-        else:
-            return render(request,'hospital/hospital_wait_for_approval.html')
-    else:
-        return HttpResponseRedirect('admin-dashboard')
-
 
 
 
@@ -176,8 +149,8 @@ def admin_dashboard_view(request):
     patientcount=models.Patient.objects.all().filter(status=True).count()
     pendingpatientcount=models.Patient.objects.all().filter(status=False).count()
 
-    appointmentcount=models.Appointment.objects.all().count()
-    
+    appointmentcount=models.Appointment.objects.all().filter(status=True).count()
+    pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
     mydict={
     'doctors':doctors,
     'patients':patients,
@@ -186,7 +159,7 @@ def admin_dashboard_view(request):
     'patientcount':patientcount,
     'pendingpatientcount':pendingpatientcount,
     'appointmentcount':appointmentcount,
-    
+    'pendingappointmentcount':pendingappointmentcount,
     }
     return render(request,'hospital/admin_dashboard.html',context=mydict)
 
@@ -317,7 +290,7 @@ def admin_patient_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_view_patient_view(request):
-    patients=models.Patient.objects.all()
+    patients=models.Patient.objects.all().filter(status=True)
     return render(request,'hospital/admin_view_patient.html',{'patients':patients})
 
 
@@ -528,7 +501,7 @@ def admin_appointment_view(request):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_view_appointment_view(request):
-    appointments=models.Appointment.objects.all()
+    appointments=models.Appointment.objects.all().filter(status=True)
     return render(request,'hospital/admin_view_appointment.html',{'appointments':appointments})
 
 
@@ -542,23 +515,42 @@ def admin_add_appointment_view(request):
         appointmentForm=forms.AppointmentForm(request.POST)
         if appointmentForm.is_valid():
             appointment=appointmentForm.save(commit=False)
-
-            doctorID = request.POST.get('doctor')
-            doctor = models.Doctor.objects.get(user_id=doctorID)
-
-            patientID = request.POST.get('patient')
-            patient = models.Patient.objects.get(user_id=patientID)
-
-            appointment.doctor=doctor
-            appointment.patient=patient
-            
+            appointment.doctorId=request.POST.get('doctorId')
+            appointment.patientId=request.POST.get('patientId')
+            appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
+            appointment.patientName=models.User.objects.get(id=request.POST.get('patientId')).first_name
+            appointment.status=True
             appointment.save()
         return HttpResponseRedirect('admin-view-appointment')
     return render(request,'hospital/admin_add_appointment.html',context=mydict)
 
 
 
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_approve_appointment_view(request):
+    #those whose approval are needed
+    appointments=models.Appointment.objects.all().filter(status=False)
+    return render(request,'hospital/admin_approve_appointment.html',{'appointments':appointments})
 
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def approve_appointment_view(request,pk):
+    appointment=models.Appointment.objects.get(id=pk)
+    appointment.status=True
+    appointment.save()
+    return redirect(reverse('admin-approve-appointment'))
+
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def reject_appointment_view(request,pk):
+    appointment=models.Appointment.objects.get(id=pk)
+    appointment.delete()
+    return redirect('admin-approve-appointment')
 #---------------------------------------------------------------------------------
 #------------------------ ADMIN RELATED VIEWS END ------------------------------
 #---------------------------------------------------------------------------------
@@ -575,14 +567,17 @@ def admin_add_appointment_view(request):
 @user_passes_test(is_doctor)
 def doctor_dashboard_view(request):
     #for three cards
-    doctor = models.Doctor.objects.get(user_id=request.user.id)
     patientcount=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).count()
-    appointmentcount=models.Appointment.objects.all().filter(doctor=doctor).count()
+    appointmentcount=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).count()
     patientdischarged=models.PatientDischargeDetails.objects.all().distinct().filter(assignedDoctorName=request.user.first_name).count()
 
     #for  table in doctor dashboard
-    appointments=models.Appointment.objects.all().filter(doctor=doctor).order_by('-id')
-    
+    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id).order_by('-id')
+    patientid=[]
+    for a in appointments:
+        patientid.append(a.patientId)
+    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid).order_by('-id')
+    appointments=zip(appointments,patients)
     mydict={
     'patientcount':patientcount,
     'appointmentcount':appointmentcount,
@@ -604,11 +599,23 @@ def doctor_patient_view(request):
 
 
 
+
+
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_view_patient_view(request):
     patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id)
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def search_view(request):
+    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    # whatever user write in search box we get in query
+    query = request.GET['query']
+    patients=models.Patient.objects.all().filter(status=True,assignedDoctorId=request.user.id).filter(Q(symptoms__icontains=query)|Q(user__first_name__icontains=query))
     return render(request,'hospital/doctor_view_patient.html',{'patients':patients,'doctor':doctor})
 
 
@@ -634,8 +641,12 @@ def doctor_appointment_view(request):
 @user_passes_test(is_doctor)
 def doctor_view_appointment_view(request):
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(doctor=doctor)
-
+    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
+    patientid=[]
+    for a in appointments:
+        patientid.append(a.patientId)
+    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_view_appointment.html',{'appointments':appointments,'doctor':doctor})
 
 
@@ -644,7 +655,12 @@ def doctor_view_appointment_view(request):
 @user_passes_test(is_doctor)
 def doctor_delete_appointment_view(request):
     doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
-    appointments=models.Appointment.objects.all().filter(doctor=doctor)
+    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
+    patientid=[]
+    for a in appointments:
+        patientid.append(a.patientId)
+    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    appointments=zip(appointments,patients)
     return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
 
 
@@ -654,7 +670,15 @@ def doctor_delete_appointment_view(request):
 def delete_appointment_view(request,pk):
     appointment=models.Appointment.objects.get(id=pk)
     appointment.delete()
-    return HttpResponseRedirect('/doctor-delete-appointment')
+    doctor=models.Doctor.objects.get(user_id=request.user.id) #for profile picture of doctor in sidebar
+    appointments=models.Appointment.objects.all().filter(status=True,doctorId=request.user.id)
+    patientid=[]
+    for a in appointments:
+        patientid.append(a.patientId)
+    patients=models.Patient.objects.all().filter(status=True,user_id__in=patientid)
+    appointments=zip(appointments,patients)
+    return render(request,'hospital/doctor_delete_appointment.html',{'appointments':appointments,'doctor':doctor})
+
 
 
 #---------------------------------------------------------------------------------
@@ -669,6 +693,84 @@ def delete_appointment_view(request,pk):
 #---------------------------------------------------------------------------------
 #------------------------ PATIENT RELATED VIEWS START ------------------------------
 #---------------------------------------------------------------------------------
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_dashboard_view(request):
+    patient=models.Patient.objects.get(user_id=request.user.id)
+    doctor=models.Doctor.objects.get(user_id=patient.assignedDoctorId)
+    mydict={
+    'patient':patient,
+    'doctorName':doctor.get_name,
+    'doctorMobile':doctor.mobile,
+    'doctorAddress':doctor.address,
+    'symptoms':patient.symptoms,
+    'doctorDepartment':doctor.department,
+    'admitDate':patient.admitDate,
+    }
+    return render(request,'hospital/patient_dashboard.html',context=mydict)
+
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_appointment_view(request):
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    return render(request,'hospital/patient_appointment.html',{'patient':patient})
+
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_book_appointment_view(request):
+    appointmentForm=forms.PatientAppointmentForm()
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    message=None
+    mydict={'appointmentForm':appointmentForm,'patient':patient,'message':message}
+    if request.method=='POST':
+        appointmentForm=forms.PatientAppointmentForm(request.POST)
+        if appointmentForm.is_valid():
+            print(request.POST.get('doctorId'))
+            desc=request.POST.get('description')
+
+            doctor=models.Doctor.objects.get(user_id=request.POST.get('doctorId'))
+            
+            appointment=appointmentForm.save(commit=False)
+            appointment.doctorId=request.POST.get('doctorId')
+            appointment.patientId=request.user.id #----user can choose any patient but only their info will be stored
+            appointment.doctorName=models.User.objects.get(id=request.POST.get('doctorId')).first_name
+            appointment.patientName=request.user.first_name #----user can choose any patient but only their info will be stored
+            appointment.status=False
+            appointment.save()
+        return HttpResponseRedirect('patient-view-appointment')
+    return render(request,'hospital/patient_book_appointment.html',context=mydict)
+
+
+
+def patient_view_doctor_view(request):
+    doctors=models.Doctor.objects.all().filter(status=True)
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    return render(request,'hospital/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
+
+
+
+def search_doctor_view(request):
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    
+    # whatever user write in search box we get in query
+    query = request.GET['query']
+    doctors=models.Doctor.objects.all().filter(status=True).filter(Q(department__icontains=query)| Q(user__first_name__icontains=query))
+    return render(request,'hospital/patient_view_doctor.html',{'patient':patient,'doctors':doctors})
+
+
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_view_appointment_view(request):
+    patient=models.Patient.objects.get(user_id=request.user.id) #for profile picture of patient in sidebar
+    appointments=models.Appointment.objects.all().filter(patientId=request.user.id)
+    return render(request,'hospital/patient_view_appointment.html',{'appointments':appointments,'patient':patient})
+
 
 
 @login_required(login_url='patientlogin')
@@ -740,305 +842,7 @@ def contactus_view(request):
 #---------------------------------------------------------------------------------
 
 
-def hospitalclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/hospitalclick.html')
 
-def hospitalsignup_view(request):
-    userForm=forms.HospitalUserForm()
-    hospitalForm=forms.HospitalForm()
-    mydict={'userForm':userForm,'hospitalForm':hospitalForm}
-    if request.method=='POST':
-        userForm=forms.HospitalUserForm(request.POST)
-        hospitalForm=forms.HospitalForm(request.POST,request.FILES)
-        if userForm.is_valid() and hospitalForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            hospital=hospitalForm.save(commit=False)
-            hospital.user=user
-            hospital.save()
-            my_hospital_group = Group.objects.get_or_create(name='HOSPITAL')
-            my_hospital_group[0].user_set.add(user)
-        return HttpResponseRedirect('hospitallogin')
-    return render(request,'hospital/hospitalsignup.html',context=mydict)
-
-def hospital_dashboard_view(request):
-    hospital = models.Hospital.objects.get(user_id=request.user.id)
-    dict={
-        'totaldoctor':models.Doctor.objects.all().filter(status=True).filter(hospital=hospital).count(),
-        'totalpatient': models.Patient.objects.all().filter(status=True).filter(hospital=hospital).count()
-    }
-    return render(request,'hospital/hospital_dashboard.html',context=dict)
-
-def change_hospital_view(request):
-    patient = models.Patient.objects.get(user_id=request.user.id)
-    return render(request,'hospital/patient_hospital.html',{'patient':patient})
-
-
-
-
-def admin_hospital_change_view(request):
-    histories = models.ChangeHospital.objects.all()
-    return render(request,'hospital/admin_hospital_change.html',{'histories':histories})
-
-
-def approve_request_view(request,pk):
-    changehospital = models.ChangeHospital.objects.get(id=pk)
-    changehospital.status='Approved'
-    patient = changehospital.patient
-    patient.hospital=changehospital.new_hospital
-    patient.save()
-    changehospital.save()
-    return redirect('admin-hospital-change')
-
-def disapprove_request_view(request,pk):
-    changehospital = models.ChangeHospital.objects.get(id=pk)
-    changehospital.status='Disapproved'
-    changehospital.save()
-    return redirect('admin-hospital-change')
-
-
-
-def hospital_doctor_view(request):
-    hospital = models.Hospital.objects.get(user_id=request.user.id)
-    doctors=models.Doctor.objects.all().filter(status=True).filter(hospital=hospital)
-    return render(request,'hospital/hospital_doctor.html',{'doctors':doctors})
-
-
-def hospital_patient_view(request):
-    hospital = models.Hospital.objects.get(user_id=request.user.id)
-    patients=models.Patient.objects.all()
-    return render(request,'hospital/hospital_patient.html',{'patients':patients})
-
-
-
-
-
-
-
-def ministryclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
-    return render(request,'hospital/ministryclick.html')
-
-def ministrysignup_view(request):
-    userForm=forms.MinistryUserForm()
-    ministryForm=forms.MinistryForm()
-    mydict={'userForm':userForm,'ministryForm':ministryForm}
-    if request.method=='POST':
-        userForm=forms.MinistryUserForm(request.POST)
-        ministryForm=forms.MinistryForm(request.POST,request.FILES)
-        if userForm.is_valid() and ministryForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            ministry=ministryForm.save(commit=False)
-            ministry.user=user
-            ministry.save()
-            my_ministry_group = Group.objects.get_or_create(name='MINISTRY')
-            my_ministry_group[0].user_set.add(user)
-        return HttpResponseRedirect('ministrylogin')
-    return render(request,'hospital/ministrysignup.html',context=mydict)
-
-def ministry_dashboard_view(request):
-    ministry = models.Ministry.objects.get(user_id=request.user.id)
-    
-    dict={
-        'approvedhospital': models.Hospital.objects.all().filter(status='Approved').count(),
-        'notapprovedhospital': models.Hospital.objects.all().filter(status='Pending').count(),
-        'totaldoctor':models.Doctor.objects.all().filter(status=True).count(),
-        'totalpatient': models.Patient.objects.all().filter(status=True).count(),
-        'pendingdoctor':models.Doctor.objects.all().filter(status=False).count(),
-        'pendingpatient':models.Patient.objects.all().filter(status=False).count(),
-    }
-    return render(request,'hospital/ministry_dashboard.html',context=dict)
-
-def ministry_hospital_view(request):
-    hospitals=models.Hospital.objects.all()
-    return render(request,'hospital/ministry_hospital.html',{'hospitals':hospitals})
-
-
-def approve_hospital_view(request,pk):
-    hospital = models.Hospital.objects.get(id=pk)
-    hospital.status='Approved'
-    hospital.save()
-    return redirect('ministry-hospital')
-
-def reject_hospital_view(request,pk):
-    hospital = models.Hospital.objects.get(id=pk)
-    hospital.status='Rejected'
-    hospital.save()
-    return redirect('ministry-hospital')
-
-def delete_hospital_view(request,pk):
-    hospital = models.Hospital.objects.get(id=pk)
-    user=models.User.objects.get(id=hospital.user_id)
-    user.delete()
-    hospital.delete()
-    return redirect('ministry-hospital')
-
-
-
-def ministry_doctor_view(request):
-    
-    doctors=models.Doctor.objects.all().filter(status=True)
-    return render(request,'hospital/ministry_doctor.html',{'doctors':doctors})
-
-
-def ministry_patient_view(request):
-    patients=models.Patient.objects.all().filter(status=True)
-    return render(request,'hospital/ministry_patient.html',{'patients':patients})
-
-
-def receptionist_signup_view(request):
-    userForm=forms.ReceptionistUserForm()
-    receptionistForm=forms.ReceptionistForm()
-    mydict={'userForm':userForm,'receptionistForm':receptionistForm}
-    if request.method=='POST':
-        userForm=forms.ReceptionistUserForm(request.POST)
-        receptionistForm=forms.ReceptionistForm(request.POST,request.FILES)
-        if userForm.is_valid() and receptionistForm.is_valid():
-            hospitalID = request.POST.get('hospital')
-            hospital = models.Hospital.objects.get(user_id=hospitalID)
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            receptionist=receptionistForm.save(commit=False)
-            receptionist.user=user
-           
-            receptionist.hospital = hospital
-            receptionist.save()
-            my_receptionist_group = Group.objects.get_or_create(name='RECEPTIONIST')
-            my_receptionist_group[0].user_set.add(user)
-        return HttpResponseRedirect('receptionistlogin')
-    return render(request,'hospital/receptionistsignup.html',context=mydict)
-
-def receptionist_dashboard_view(request):
-    receptionist = models.Receptionist.objects.get(user_id=request.user.id)
-    hospital = receptionist.hospital
-    dict={
-        'totaldoctor':models.Doctor.objects.all().filter(status=True).filter(hospital=hospital).count(),
-        'totalpatient': models.Patient.objects.all().filter(status=True).filter(hospital=hospital).count(),
-        'pendingdoctor':models.Doctor.objects.all().filter(status=False).filter(hospital=hospital).count(),
-        'pendingpatient':models.Patient.objects.all().filter(status=False).filter(hospital=hospital).count(),
-    }
-    return render(request,'hospital/receptionist_dashboard.html',context=dict)
-
-def admin_receptionist_view(request):
-    receptionist=models.Receptionist.objects.all()
-    return render(request,'hospital/admin_receptionist.html',{'receptionist':receptionist})
-
-def approve_receptionist_view(request,pk):
-    receptionist = models.Receptionist.objects.get(id=pk)
-    receptionist.status=True
-    receptionist.save()
-    return redirect('admin-receptionist')
-
-def reject_receptionist_view(request,pk):
-    receptionist = models.Receptionist.objects.get(id=pk)
-    receptionist.status=False
-    receptionist.save()
-    return redirect('admin-receptionist')
-
-def delete_receptionist_view(request,pk):
-    receptionist = models.Receptionist.objects.get(id=pk)
-    user=models.User.objects.get(id=receptionist.user_id)
-    user.delete()
-    receptionist.delete()
-    return redirect('admin-receptionist')
-
-
-
-def receptionist_appointment_view(request):
-    return render(request,'hospital/receptionist_appointment.html')
-
-
-
-def receptionist_view_appointment_view(request):
-    appointments=models.Appointment.objects.all()
-    return render(request,'hospital/receptionist_view_appointment.html',{'appointments':appointments})
-
-
-
-def receptionist_add_appointment_view(request):
-    appointmentForm=forms.AppointmentForm()
-    mydict={'appointmentForm':appointmentForm}
-    if request.method=='POST':
-        appointmentForm=forms.AppointmentForm(request.POST)
-        if appointmentForm.is_valid():
-            appointment=appointmentForm.save(commit=False)
-
-            doctorID = request.POST.get('doctor')
-            doctor = models.Doctor.objects.get(user_id=doctorID)
-
-            patientID = request.POST.get('patient')
-            patient = models.Patient.objects.get(user_id=patientID)
-
-            appointment.doctor=doctor
-            appointment.patient=patient
-            
-            appointment.save()
-        return HttpResponseRedirect('receptionist-view-appointment')
-    return render(request,'hospital/receptionist_add_appointment.html',context=mydict)
-
-def receptionist_patient_view(request):
-    return render(request,'hospital/receptionist_patient.html')
-    
-def receptionist_view_patient_view(request):
-    patients=models.Patient.objects.all()
-    return render(request,'hospital/receptionist_view_patient.html',{'patients':patients})
-
-
-def receptionist_add_patient_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
-    if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
-        if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.status=True
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient.save()
-
-            my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
-
-        return HttpResponseRedirect('receptionist-view-patient')
-    return render(request,'hospital/receptionist_add_patient.html',context=mydict)
-
-
-def receptionist_change_hospital_view(request):   
-    changeHospitalForm=forms.ChangeHospitalForm()
-    if request.method=='POST':
-        changeHospitalForm=forms.ChangeHospitalForm(request.POST)
-        if changeHospitalForm.is_valid() :
-            hospitalID = request.POST.get('hospital')
-            patientID = request.POST.get('patient')
-           
-            new_hospital = models.Hospital.objects.get(user_id=hospitalID)
-            patient = models.Patient.objects.get(user_id=patientID)
-            current_hospital = patient.hospital
-            changeHospital=changeHospitalForm.save(commit=False)
-            changeHospital.patient=patient
-            changeHospital.current_hospital=current_hospital
-            changeHospital.new_hospital=new_hospital
-            changeHospital.save()
-            return HttpResponseRedirect('hospital-change-history')
-        else:
-            print('not valid')
-    return render(request,'hospital/receptionist_change_hospital.html',{'changeHospitalForm':changeHospitalForm})
-
-
-def hospital_change_history_view(request):
-    histories = models.ChangeHospital.objects.all()
-    return render(request,'hospital/hospital_change_history.html',{'histories':histories})
-
+#Developed By : sumit kumar
+#facebook : fb.com/sumit.luv
+#Youtube :youtube.com/lazycoders

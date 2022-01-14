@@ -17,19 +17,16 @@
             <th>Description</th>
             <th>Mobile</th>
             <th>Address</th>
-            <th>Hospital</th>
             <th>Date</th>
           </tr>
         </thead>
-        {% for a in appointments %}
+        {% for a,p in appointments %}
         <tr>
-          <td>{{a.patient}}</td>
-          <td> <img src="{% static a.patient.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+          <td>{{a.patientName}}</td>
+          <td> <img src="{% static p.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
           <td>{{a.description}}</td>
-          <td>{{a.patient.mobile}}</td>
-          <td>{{a.patient.address}}</td>
-          <td>{{a.patient.hospital}}</td>
-          
+          <td>{{p.mobile}}</td>
+          <td>{{p.address}}</td>
           <td>{{a.appointmentDate}}</td>
         </tr>
         {% endfor %}
@@ -37,6 +34,10 @@
     </div>
   </div>
 </div>
-
+<!--
+developed By : sumit kumar
+facebook : fb.com/sumit.luv
+youtube : youtube.com/lazycoders
+-->
 
 {% endblock content %}

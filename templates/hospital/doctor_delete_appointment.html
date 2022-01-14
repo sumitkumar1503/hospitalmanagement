@@ -39,10 +39,10 @@ facebook : fb.com/sumit.luv
           <th>Delete</th>
         </tr>
       </thead>
-      {% for a in appointments %}
+      {% for a,p in appointments %}
       <tr>
-        <td>{{a.patient}}</td>
-        <td> <img src="{% static a.patient.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+        <td>{{a.patientName}}</td>
+        <td> <img src="{% static p.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
         <td>{{a.description}}</td>
         <td><a class="btn btn-danger btn-xs" href="{% url 'delete-appointment' a.id  %}"><span class="glyphicon glyphicon-trash"></span></a></td>
       </tr>
@@ -50,6 +50,10 @@ facebook : fb.com/sumit.luv
     </table>
   </div>
 </div>
-
+<!--
+developed By : sumit kumar
+facebook : fb.com/sumit.luv
+youtube : youtube.com/lazycoders
+-->
 
 {% endblock content %}

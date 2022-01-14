@@ -47,7 +47,7 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <br><br>
-
+<!------ add appointment page by admin(sumit)  ---------->
 <form method="post">
   {% csrf_token %}
   <div class="container register-form">
@@ -62,10 +62,10 @@
               {% render_field appointmentForm.description class="form-control" placeholder="Description" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.doctor class="form-control" placeholder="doctor" %}
+              {% render_field appointmentForm.doctorId class="form-control" placeholder="doctor" %}
             </div>
             <div class="form-group">
-              {% render_field appointmentForm.patient class="form-control" placeholder="patient" %}
+              {% render_field appointmentForm.patientId class="form-control" placeholder="patient" %}
             </div>
 
           </div>
@@ -77,6 +77,10 @@
   </div>
 </form>
 
-
+<!--
+developed By : sumit kumar
+facebook : fb.com/sumit.luv
+youtube : youtube.com/lazycoders
+-->
 
 {% endblock content %}

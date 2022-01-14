@@ -20,7 +20,10 @@
     }
   </style>
 </head>
-
+<!--
+written By : sumit kumar
+facebook : fb.com/sumit.luv
+-->
 <div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
@@ -37,8 +40,8 @@
       </thead>
       {% for a in appointments %}
       <tr>
-        <td> {{a.doctor}}</td>
-        <td>{{a.patient}}</td>
+        <td> {{a.doctorName}}</td>
+        <td>{{a.patientName}}</td>
         <td>{{a.description}}</td>
         <td>{{a.appointmentDate}}</td>
       </tr>
@@ -46,16 +49,10 @@
     </table>
   </div>
 </div>
+<!--
+developed By : sumit kumar
+facebook : fb.com/sumit.luv
+youtube : youtube.com/lazycoders
+-->
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 {% endblock content %}

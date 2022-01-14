@@ -1,3 +1,14 @@
+"""
+
+Developed By : sumit kumar
+facebook : fb.com/sumit.luv
+Youtube :youtube.com/lazycoders
+
+
+"""
+
+
+
 
 from django.contrib import admin
 from django.urls import path
@@ -17,7 +28,7 @@ urlpatterns = [
 
     path('adminclick', views.adminclick_view),
     path('doctorclick', views.doctorclick_view),
-    path('receptionistclick', views.receptionistclick_view),
+    path('patientclick', views.patientclick_view),
 
     path('adminsignup', views.admin_signup_view),
     path('doctorsignup', views.doctor_signup_view,name='doctorsignup'),
@@ -61,13 +72,16 @@ urlpatterns = [
     path('admin-appointment', views.admin_appointment_view,name='admin-appointment'),
     path('admin-view-appointment', views.admin_view_appointment_view,name='admin-view-appointment'),
     path('admin-add-appointment', views.admin_add_appointment_view,name='admin-add-appointment'),
-    
+    path('admin-approve-appointment', views.admin_approve_appointment_view,name='admin-approve-appointment'),
+    path('approve-appointment/<int:pk>', views.approve_appointment_view,name='approve-appointment'),
+    path('reject-appointment/<int:pk>', views.reject_appointment_view,name='reject-appointment'),
 ]
 
 
 #---------FOR DOCTOR RELATED URLS-------------------------------------
 urlpatterns +=[
     path('doctor-dashboard', views.doctor_dashboard_view,name='doctor-dashboard'),
+    path('search', views.search_view,name='search'),
 
     path('doctor-patient', views.doctor_patient_view,name='doctor-patient'),
     path('doctor-view-patient', views.doctor_view_patient_view,name='doctor-view-patient'),
@@ -82,70 +96,19 @@ urlpatterns +=[
 
 
 
-
-#---------FOR RECEPTIONIST RELATED URLS-------------------------------------
+#---------FOR PATIENT RELATED URLS-------------------------------------
 urlpatterns +=[
 
-    path('receptionistsignup', views.receptionist_signup_view),
-    path('receptionist-dashboard', views.receptionist_dashboard_view,name='receptionist-dashboard'),
-    path('admin-receptionist', views.admin_receptionist_view,name='admin-receptionist'),
-    path('receptionistlogin', LoginView.as_view(template_name='hospital/receptionistlogin.html')),
-
-    path('approve-receptionist/<int:pk>', views.approve_receptionist_view,name='approve-receptionist'),
-    path('reject-receptionist/<int:pk>', views.reject_receptionist_view,name='reject-receptionist'),
-    path('delete-receptionist/<int:pk>', views.delete_receptionist_view,name='delete-receptionist'),
-    path('receptionist-change-hospital', views.receptionist_change_hospital_view,name='receptionist-change-hospital'),
-    path('receptionist-patient', views.receptionist_patient_view,name='receptionist-patient'),
-    path('receptionist-view-patient', views.receptionist_view_patient_view,name='receptionist-view-patient'),
-    path('receptionist-add-patient', views.receptionist_add_patient_view,name='receptionist-add-patient'),
-
-
-
-    path('receptionist-appointment', views.receptionist_appointment_view,name='receptionist-appointment'),
-    path('receptionist-view-appointment', views.receptionist_view_appointment_view,name='receptionist-view-appointment'),
-    path('receptionist-add-appointment', views.receptionist_add_appointment_view,name='receptionist-add-appointment'),
-]
-#---------FOR HOSPITAL RELATED URLS-------------------------------------
-urlpatterns +=[
-
-    path('hospitalclick', views.hospitalclick_view,name='hospitalclick'),
-    path('hospitalsignup', views.hospitalsignup_view,name='hospitalsignup'),
-    path('hospitallogin', LoginView.as_view(template_name='hospital/hospitallogin.html')),
-    path('hospital-dashboard', views.hospital_dashboard_view,name='hospital-dashboard'),
-    path('change-hospital', views.change_hospital_view,name='change-hospital'),
-
-    
-    path('hospital-change-history', views.hospital_change_history_view,name='hospital-change-history'),
-    path('admin-hospital-change', views.admin_hospital_change_view,name='admin-hospital-change'),
-
-    path('approve-request/<int:pk>', views.approve_request_view,name='approve-request'),
-    path('reject-request/<int:pk>', views.disapprove_request_view,name='reject-request'),
-
-    path('hospital-doctor', views.hospital_doctor_view,name='hospital-doctor'),
-    path('hospital-patient', views.hospital_patient_view,name='hospital-patient'),
-
-
-
-]
-#---------FOR MINISTRY RELATED URLS-------------------------------------
-urlpatterns +=[
-
-    path('ministryclick', views.ministryclick_view,name='ministryclick'),
-    path('ministrysignup', views.ministrysignup_view,name='ministrysignup'),
-    path('ministrylogin', LoginView.as_view(template_name='hospital/ministrylogin.html')),
-    path('ministry-dashboard', views.ministry_dashboard_view,name='ministry-dashboard'),
-    path('ministry-hospital', views.ministry_hospital_view,name='ministry-hospital'),
-
-    path('approve-hospital/<int:pk>', views.approve_hospital_view,name='approve-hospital'),
-    path('reject-hospital/<int:pk>', views.reject_hospital_view,name='reject-hospital'),
-    path('delete-hospital/<int:pk>', views.delete_hospital_view,name='delete-hospital'),
-
-    path('ministry-doctor', views.ministry_doctor_view,name='ministry-doctor'),
-    path('ministry-patient', views.ministry_patient_view,name='ministry-patient'),
-    
-    
-
-
+    path('patient-dashboard', views.patient_dashboard_view,name='patient-dashboard'),
+    path('patient-appointment', views.patient_appointment_view,name='patient-appointment'),
+    path('patient-book-appointment', views.patient_book_appointment_view,name='patient-book-appointment'),
+    path('patient-view-appointment', views.patient_view_appointment_view,name='patient-view-appointment'),
+    path('patient-view-doctor', views.patient_view_doctor_view,name='patient-view-doctor'),
+    path('searchdoctor', views.search_doctor_view,name='searchdoctor'),
+    path('patient-discharge', views.patient_discharge_view,name='patient-discharge'),
 
 ]
 
+#Developed By : sumit kumar
+#facebook : fb.com/sumit.luv
+#Youtube :youtube.com/lazycoders
