@@ -469,7 +469,15 @@ def render_to_pdf(template_src, context_dict):
 
 
 
+@login_required(login_url='adminlogin')
 def download_pdf_view(request,pk):
+    #only an admin, or the patient who owns this bill, may download it
+    if not is_admin(request.user):
+        if not is_patient(request.user):
+            return HttpResponseRedirect('/')
+        patient=models.Patient.objects.get(user_id=request.user.id)
+        if patient.id != pk:
+            return HttpResponseRedirect('/')
     dischargeDetails=models.PatientDischargeDetails.objects.all().filter(patientId=pk).order_by('-id')[:1]
     dict={
         'patientName':dischargeDetails[0].patientName,
